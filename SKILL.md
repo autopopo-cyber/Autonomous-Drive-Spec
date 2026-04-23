@@ -482,6 +482,11 @@
 
 ---
 
+## Origin Documents
+
+- **ORIGIN.md** — Public version. Philosophical reasoning, suitable for sharing. No internal strategy.
+- **ORIGIN-INTERNAL.md** — Internal reference. Blunt analysis, strategy, and roadmap. Do NOT publish or link publicly.
+
 ## Collaboration Framework (v0.4)
 
 Auto-Drive v0.3 gave individual agents a survival drive. v0.4 gives them **collaboration** — the mechanism to break through the 200K context limit through layered task coordination.
