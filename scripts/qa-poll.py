@@ -10,10 +10,14 @@ if not GID:
     sys.exit(0)
 
 try:
+    # Bypass proxy for localhost — urllib goes through system proxy otherwise
+    proxy_handler = urllib.request.ProxyHandler({})
+    opener = urllib.request.build_opener(proxy_handler)
+    
     url = f"{MC}/api/tasks?status=review&limit=1"
     req = urllib.request.Request(url)
     req.add_header('x-api-key', KEY)
-    with urllib.request.urlopen(req, timeout=10) as resp:
+    with opener.open(req, timeout=10) as resp:
         data = json.loads(resp.read())
     
     tasks = data if isinstance(data, list) else data.get('tasks', [])
