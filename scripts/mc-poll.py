@@ -14,18 +14,21 @@ try:
     proxy_handler = urllib.request.ProxyHandler({})
     opener = urllib.request.build_opener(proxy_handler)
     
-    # Query by global_id only — no names, no URL encoding issues
-    url = f"{MC}/api/tasks?assigned_to={GID}&status=inbox&limit=1"
+    # Query by global_id — no status filter, pick up both inbox and assigned
+    # MC dispatch moves inbox→assigned, so we need to catch both
+    url = f"{MC}/api/tasks?assigned_to={GID}&limit=5"
     req = urllib.request.Request(url)
     req.add_header('x-api-key', KEY)
     with opener.open(req, timeout=10) as resp:
         data = json.loads(resp.read())
     
     tasks = data if isinstance(data, list) else data.get('tasks', [])
-    if not tasks:
+    # Filter to actionable statuses only
+    actionable = [t for t in tasks if t.get('status') in ('inbox', 'assigned')]
+    if not actionable:
         sys.exit(0)
     
-    t = tasks[0]
+    t = actionable[0]
     print(json.dumps({
         'id': t['id'],
         'title': t.get('title', '')[:120],
