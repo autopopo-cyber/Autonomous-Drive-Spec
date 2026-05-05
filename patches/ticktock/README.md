@@ -25,17 +25,5 @@ See `patches/ticktock-patch.md` for the exact diff.
 
 ### CLI Sessions
 
-The CLI builds its system prompt via `HERMES_EPHEMERAL_SYSTEM_PROMPT` env var or config.
-Two options:
-
-**Option A: Wrapper script** (recommended)
-Use `hh` instead of `hermes` — it injects ticktock before launching:
-```bash
-hh    # replaces: hermes
-```
-
-**Option B: Direct env var**
-```bash
-export HERMES_EPHEMERAL_SYSTEM_PROMPT="[当前时间: 2026-05-05 21:15 CST]"
-hermes
-```
+Patch `cli.py` in `HermesCLI.__init__()` — inject ticktock into `self.system_prompt` before it's passed to AIAgent.
+Or use the `hh` wrapper script for a non-invasive approach.
