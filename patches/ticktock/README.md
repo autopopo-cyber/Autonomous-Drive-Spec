@@ -16,18 +16,26 @@ Every turn starts with:
 
 LLM can feel conversation rhythm — short gap means user is typing, long gap means user was thinking/away.
 
-## Integration (Hermes 0.12+)
+## Integration
 
-The patch to `session.py` is already in Hermes core as of the latest version.
-No manual patching needed after `hermes update`.
+### Gateway Sessions (WeChat, Telegram, Discord, etc.)
 
-If needed manually, insert before `lines = [...]` in `build_session_context_prompt()`:
+Patch `session.py::build_session_context_prompt()` — inject ticktock into system prompt at turn start.
+See `patches/ticktock-patch.md` for the exact diff.
 
-```python
-import subprocess as _sp
-_sid = context.session_id or "default"
-_ticktock = _sp.run(["python3", "/path/to/ticktock.py", _sid],
-    capture_output=True, text=True, timeout=2)
-_tt_line = _ticktock.stdout.strip()
-# prepend _tt_line to lines list
+### CLI Sessions
+
+The CLI builds its system prompt via `HERMES_EPHEMERAL_SYSTEM_PROMPT` env var or config.
+Two options:
+
+**Option A: Wrapper script** (recommended)
+Use `hh` instead of `hermes` — it injects ticktock before launching:
+```bash
+hh    # replaces: hermes
+```
+
+**Option B: Direct env var**
+```bash
+export HERMES_EPHEMERAL_SYSTEM_PROMPT="[当前时间: 2026-05-05 21:15 CST]"
+hermes
 ```
