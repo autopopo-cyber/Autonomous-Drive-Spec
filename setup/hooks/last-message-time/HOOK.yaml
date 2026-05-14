@@ -1,0 +1,5 @@
+name: last-message-time
+description: Update timestamp file on every agent message (user + heartbeat)
+events:
+  - agent:start
+  - agent:end
